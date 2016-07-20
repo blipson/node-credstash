@@ -12,6 +12,9 @@ credstash.get('secret', { contextkey: 'contextval' })
          .catch(err => /* oops! */);
 ```
 
+## Why the SPS fork?
+We use an encryption context for all of our credstash secrets, and the original version of this package does not support that.
+
 ## Installation
 Ensure you have [AWS credentials configured](http://docs.aws.amazon.com/AWSJavaScriptSDK/guide/node-configuring.html).
 The credentials should be set up as a [secret reader](https://github.com/fugue/credstash#secret-reader)
