@@ -1,43 +1,26 @@
-const async = require('async');
-const decrypter = require('./lib/decrypter');
-const encoder = require('./lib/encoder');
-const hmac = require('./lib/hmac');
-const keys = require('./lib/keys');
-const secrets = require('./lib/secrets');
-const xtend = require('xtend');
-
-const defaults = {
-  limit: 1
-};
+const
+    decrypter = require('./lib/decrypter'),
+    encoder   = require('./lib/encoder'),
+    hmac      = require('./lib/hmac'),
+    keys      = require('./lib/keys'),
+    secrets   = require('./lib/secrets');
 
 function Credstash(config) {
-  this.table = config ? config.table : undefined;
+    this.table = config ? config.table : 'credential-store';
 }
 
-Credstash.prototype.get = function(name, options, done) {
-  if (typeof options === 'function') {
-    done = options;
-    options = defaults;
-  } else {
-    options = xtend(defaults, options);
-  }
+const default_get_options = {
+    limit: 1
+};
 
-  return async.waterfall([
-    async.apply(secrets.get, this.table, name, options),
-    async.apply(keys.decrypt),
-    async.apply(hmac.check),
-    async.apply(decrypter.decrypt)
-  ], function (err, secrets) {
-    if (err) {
-      return done(err);
-    }
+Credstash.prototype.get = function (name, context, options) {
+    options = Object.assign({}, default_get_options, options);
 
-    if (options.limit === 1) {
-      return done(null, secrets && secrets[0]);
-    }
-
-    done(null, secrets);
-  });
+    return secrets.get(this.table, name, options)
+                  .then(result => keys.decrypt(result, context))
+                  .then(keys_decrypted => hmac.check(keys_decrypted))
+                  .then(checked => decrypter.decrypt(checked))
+                  .then(decrypted => options.limit === 1 ? decrypted && decrypted[0] : decrypted);
 };
 
 module.exports = Credstash;
