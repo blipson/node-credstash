@@ -22,7 +22,7 @@ The credentials should be set up as a [secret reader](https://github.com/fugue/c
 You must also ensure the environment variable AWS_DEFAULT_REGION is set.
 
 ```bash
-$ npm install SPSCommerce/credstash
+$ npm install SPSCommerce/node-credstash
 ```
 
 ## What is credstash?
