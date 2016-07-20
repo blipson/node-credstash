@@ -4,20 +4,22 @@
 Node.js module for reading [credstash](https://github.com/fugue/credstash) secrets without needing snakes
 
 ```js
-const Credstash = require('../index.js');
+const Credstash = require('credstash'),
+      credstash = new Credstash();
 
-var credstash = new Credstash();
-return credstash.get('secret', (e, secret) => {
-  console.log('do not share the secret', secret);
-});
+credstash.get('secret', { contextkey: 'contextval' })
+         .then(secret => /* do something with secret */)
+         .catch(err => /* oops! */);
 ```
 
 ## Installation
 Ensure you have [AWS credentials configured](http://docs.aws.amazon.com/AWSJavaScriptSDK/guide/node-configuring.html).
 The credentials should be set up as a [secret reader](https://github.com/fugue/credstash#secret-reader)
 
+You must also ensure the environment variable AWS_DEFAULT_REGION is set.
+
 ```bash
-$ npm install credstash
+$ npm install SPSCommerce/credstash
 ```
 
 ## What is credstash?
@@ -35,13 +37,14 @@ By default node-credstash will return the latest (most recent version of a secre
 You can also retrieve the latest N versions of a secret as follows:
 
 ```js
-const Credstash = require('../index.js');
+const Credstash = require('credstash'),
+      credstash = new Credstash();
 
-var credstash = new Credstash();
-return credstash.get('secret', {limit: 3}, (e, secrets) => {
-  console.log('this is the last version', secrets[0]);
-  console.log('this is the second-last', secrets[1]);
-  console.log('this is the third-last', secrets[2]);
-});
+credstash.get('secret', { contextkey: 'contextvalue' }, {limit: 3})
+         .then(secrets => {
+             console.log('this is the last version', secrets[0]);
+             console.log('this is the second-last', secrets[1]);
+             console.log('this is the third-last', secrets[2]);
+         });
 ```
 
