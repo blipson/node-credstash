@@ -3,6 +3,7 @@
 
 Node.js module for reading [credstash](https://github.com/fugue/credstash) secrets without needing snakes
 
+## Basic Usage
 ```js
 const Credstash = require('credstash'),
       credstash = new Credstash();
@@ -32,6 +33,20 @@ $ npm install SPSCommerce/node-credstash
 This module is for environments where you are using [credstash](https://github.com/fugue/credstash) to store secrets,
 and you want to read secrets within node without installing python.
 The module could be used within your node module to retrieve, for instance, database connection credentials from credstash.
+
+## Retrieving multiple subkeys under a given key at once
+```js
+const Credstash = require('credstash'),
+      credstash = new Credstash();
+
+// Gets "stage.myapp.db.host", "stage.myapp.db.user", and "stage.myapp.db.password"
+credstash.get('stage.myapp.db', [ 'host', 'user', 'password' ], { contextkey: 'contextval' })
+         .then(secrets => {
+             console.log('host:', secrets.host);
+             console.log('user:', secrets.user);
+             console.log('password:', secrets.password);
+         });
+```
 
 ## Retrieving the last N versions of a secret
 Credstash support [versioning of secrets](https://github.com/fugue/credstash#versioning-secrets) which allows to easily rotate secrets.
