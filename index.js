@@ -13,7 +13,18 @@ const default_get_options = {
     limit: 1
 };
 
-Credstash.prototype.get = function (name, context, options) {
+Credstash.prototype.get = function (name, subkeys, context, options) {
+    if (!Array.isArray(subkeys)) {
+        options = context;
+        context = subkeys;
+        subkeys = [];
+    }
+
+    if (subkeys.length) {
+        return Promise.all(subkeys.map(key => this.get(`${name}.${key}`, context, options)))
+                      .then(secrets => secrets.reduce((o, sec, i) => Object.assign(o, { [subkeys[i]]: sec }), {}));
+    }
+
     options = Object.assign({}, default_get_options, options);
 
     return secrets.get(this.table, name, options)
