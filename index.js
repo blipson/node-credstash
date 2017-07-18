@@ -14,6 +14,7 @@ const default_get_options = {
 };
 
 Credstash.prototype.get = function (name, subkeys, context, options) {
+    console.log('HI IM IN THE CREDSTASH GET FUNCTION');
     if (!Array.isArray(subkeys)) {
         options = context;
         context = subkeys;
