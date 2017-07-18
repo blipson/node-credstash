@@ -30,6 +30,6 @@
   },
   "dependencies": {
     "aes-js": "0.2.2",
-    "aws-sdk": "2.2.35"
+    "aws-sdk": "2.86.0"
   }
 }
